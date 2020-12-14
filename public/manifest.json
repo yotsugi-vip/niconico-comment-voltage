@@ -1,0 +1,9 @@
+{
+ "content_script":[
+     {
+         "matches":[],
+         "css":[],
+         "js":[]
+     }
+ ]
+}

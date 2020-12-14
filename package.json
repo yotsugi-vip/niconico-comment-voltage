@@ -1,0 +1,13 @@
+{
+  "name": "nicomment-voltage",
+  "version": "0.0.0",
+  "main": "index.js",
+  "author": "dev01.topaz@gmail.com",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "tsc": "^1.20150623.0",
+    "typescript": "^4.1.3",
+    "webpack": "^5.10.1"
+  }
+}
