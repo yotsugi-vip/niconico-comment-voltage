@@ -1,13 +1,5 @@
-/**
- * [{
- *  "value": "",
- *  "time" : 00:00
- * }]
- * 
- * 
- */
-
-const getComment = () => {
+/** Request用Json作成 */
+const makeJson = () => {
     let api_data = $('#js-initial-watch-data').attr('data-api-data');
     let api_json = JSON.parse(api_data);
     let req = new Array();
@@ -63,16 +55,68 @@ const getComment = () => {
     return JSON.stringify(req);
 }
 
+/** 
+ * コメントデータ取得 
+ * @returns {JSON} JSON
+ * */
 const fetchComment = async () => {
-    const req = getComment();
+    const req = makeJson();
     const url = "https://nmsg.nicovideo.jp/api.json/";
-    const res = await fetch(url, {method:"post", body: req });
+    const res = await fetch(url, { method: "post", body: req });
     const data = await res.json();
-    console.log(data);
+    return data;
 }
 
+/**
+ * コメントを配列に格納
+ * @param {JSON} data_json 
+ * @returns {Array<number>} Array\<number>[100]
+ */
+const getCommentData = (data_json) => {
+    let arr = new Array(count).fill(0);
+    let arr2 = new Array(100).fill(0);
+    let idx = 0;
+    let count = 0;
+    const per_sec = parseInt(count / 100) + 1;
+
+    // コメントデータ数取得
+    json.forEach((data_json) => {
+        if (data_json["chat"]) {
+            count++;
+        }
+    });
+
+    // コメントデータのみ抽出
+    json.forEach((data_json) => {
+        if (data_json["chat"]) {
+            let _sec = parseInt(data_json["chat"]["vpos"] / 100);
+            arr[_sec]++;
+        }
+    });
+
+    // 100個に圧縮
+    arr.forEach((num, i) => {
+        arr2[idx] += num;
+        if (i % per_sec == 0 && i != 0) {
+            idx++;
+        }
+    });
+
+    return arr2;
+}
+
+/** メイン */
 $(function () {
-    console.log("hello");
+
+    let data_json;
+    let comments;
+
+    //console.log("NicoNico Comment Voltage");
+    //data_json = fetchComment();
+    //comments = getCommentData(data_json);
+
+
+
     $('.ControllerContainer').before('<div class="adin"></div>');
     $('.adin').css({
         "position": "relative",
@@ -83,5 +127,31 @@ $(function () {
         "height": "50px"
     });
 
-    fetchComment();
+    $('.adin').append('<div class="adin-inner"></div>');
+    $('.adin-inner').css({
+        "border-radius": "8px",
+        "background-color": "#252525",
+        "height": "100%",
+        "margin-top": "5px",
+        "margin-left": "5px",
+        "margin-right": "5px"
+    });
+
+    let w = $('.adin-inner').width();
+    let h = $('.adin-inner').height();
+
+    const canvas_id = "comment-voltage";
+    console.log(w + "x" + h);
+    const canvas_raw = `<canvas id=\"${canvas_id}\" width=\"${w}\" height=\"${h}\"></canvas>`;
+
+    $('.adin-inner').append(canvas_raw);
+    let canvas = document.getElementById(canvas_id);
+    if (canvas.getContext) {
+        /**@type {CanvasRenderingContext2D} */
+        let ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#252525';
+        ctx.fillRect(25, 25, 50, 50);
+    }
+
+
 });
