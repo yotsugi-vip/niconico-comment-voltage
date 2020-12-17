@@ -57,7 +57,6 @@ const makeJson = () => {
 
 /** 
  * コメントデータ取得 
- * @returns {JSON} JSON
  * */
 const fetchComment = async () => {
     const req = makeJson();
@@ -73,48 +72,32 @@ const fetchComment = async () => {
  * @returns {Array<number>} Array\<number>[100]
  */
 const getCommentData = (data_json) => {
-    let arr = new Array(count).fill(0);
-    let arr2 = new Array(100).fill(0);
-    let idx = 0;
-    let count = 0;
-    const per_sec = parseInt(count / 100) + 1;
-
-    // コメントデータ数取得
-    json.forEach((data_json) => {
-        if (data_json["chat"]) {
-            count++;
-        }
-    });
+    const api_data = $('#js-initial-watch-data').attr('data-api-data');
+    const api_json = JSON.parse(api_data);
+    const duration = api_json["video"]["duration"];
+    let arr = new Array(duration).fill(0);
 
     // コメントデータのみ抽出
-    json.forEach((data_json) => {
-        if (data_json["chat"]) {
-            let _sec = parseInt(data_json["chat"]["vpos"] / 100);
+    data_json.forEach((val) => {
+        if (val["chat"]) {
+            let _sec = parseInt(val["chat"]["vpos"] / 100);
             arr[_sec]++;
         }
     });
 
-    // 100個に圧縮
-    arr.forEach((num, i) => {
-        arr2[idx] += num;
-        if (i % per_sec == 0 && i != 0) {
-            idx++;
-        }
-    });
-
-    return arr2;
+    console.log(arr);
+    return arr;
 }
 
 /** メイン */
-$(function () {
+$(async function () {
 
     let data_json;
     let comments;
 
-    //console.log("NicoNico Comment Voltage");
-    //data_json = fetchComment();
-    //comments = getCommentData(data_json);
-
+    console.log("NicoNico Comment Voltage");
+    data_json = await fetchComment();
+    comments = getCommentData(data_json);
 
 
     $('.ControllerContainer').before('<div class="adin"></div>');
@@ -137,20 +120,45 @@ $(function () {
         "margin-right": "5px"
     });
 
-    let w = $('.adin-inner').width();
-    let h = $('.adin-inner').height();
+    $(".adin-inner").append('<div class="canvas-container"></div>');
+    $(".canvas-container").css({
+        "height": "100%",
+        "margin-left": "5px",
+        "margin-right": "5px"
+    });
+
+    let w = $('.canvas-container').width();
+    let h = $('.canvas-container').height();
 
     const canvas_id = "comment-voltage";
     console.log(w + "x" + h);
     const canvas_raw = `<canvas id=\"${canvas_id}\" width=\"${w}\" height=\"${h}\"></canvas>`;
 
-    $('.adin-inner').append(canvas_raw);
+    $('.canvas-container').append(canvas_raw);
     let canvas = document.getElementById(canvas_id);
     if (canvas.getContext) {
+
         /**@type {CanvasRenderingContext2D} */
         let ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#252525';
-        ctx.fillRect(25, 25, 50, 50);
+        const api_data = $('#js-initial-watch-data').attr('data-api-data');
+        const api_json = JSON.parse(api_data);
+        const duration = api_json["video"]["duration"];
+
+        ctx.fillStyle = 'blue';
+
+        let x = 0;
+        let y = 0;
+        const width = w / duration;
+        let height = 0;
+
+        comments.forEach((c, i) => {
+            height = (c / h) * 100;
+            height = height > 100 ? 100 : height;
+            x = i * width;
+            y = h - height;
+
+            ctx.fillRect(x, y, width, height);
+        });
     }
 
 
