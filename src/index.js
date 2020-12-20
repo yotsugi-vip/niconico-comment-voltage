@@ -1,3 +1,7 @@
+const color_comment = "#4990E2";
+const color_nucoru = "#D9A300";
+const color_back = "#252525";
+
 /** Request用Json作成 */
 const makeJson = () => {
     let api_data = $('#js-initial-watch-data').attr('data-api-data');
@@ -85,7 +89,25 @@ const getCommentData = (data_json) => {
         }
     });
 
-    console.log(arr);
+    return arr;
+}
+
+const getNicoruData = (data_json) => {
+    const api_data = $('#js-initial-watch-data').attr('data-api-data');
+    const api_json = JSON.parse(api_data);
+    const duration = api_json["video"]["duration"];
+    let arr = new Array(duration).fill(0);
+
+    // ニコるデータのみ抽出
+    data_json.forEach((val) => {
+        if (val["chat"]) {
+            let _sec = parseInt(val["chat"]["vpos"] / 100);
+            if (val["chat"]["nicoru"]) {
+                arr[_sec] += val["chat"]["nicoru"];
+            }
+        }
+    });
+
     return arr;
 }
 
@@ -94,11 +116,13 @@ $(async function () {
 
     let data_json;
     let comments;
+    let nicoru;
 
     console.log("NicoNico Comment Voltage");
+    
     data_json = await fetchComment();
     comments = getCommentData(data_json);
-
+    nicoru = getNicoruData(data_json);
 
     $('.ControllerContainer').before('<div class="adin"></div>');
     $('.adin').css({
@@ -113,7 +137,7 @@ $(async function () {
     $('.adin').append('<div class="adin-inner"></div>');
     $('.adin-inner').css({
         "border-radius": "8px",
-        "background-color": "#252525",
+        "background-color": color_back,
         "height": "100%",
         "margin-top": "5px",
         "margin-left": "5px",
@@ -131,26 +155,25 @@ $(async function () {
     let h = $('.canvas-container').height();
 
     const canvas_id = "comment-voltage";
-    console.log(w + "x" + h);
     const canvas_raw = `<canvas id=\"${canvas_id}\" width=\"${w}\" height=\"${h}\"></canvas>`;
 
     $('.canvas-container').append(canvas_raw);
     let canvas = document.getElementById(canvas_id);
-    if (canvas.getContext) {
 
+    if (canvas.getContext) {
         /**@type {CanvasRenderingContext2D} */
         let ctx = canvas.getContext('2d');
         const api_data = $('#js-initial-watch-data').attr('data-api-data');
         const api_json = JSON.parse(api_data);
         const duration = api_json["video"]["duration"];
 
-        ctx.fillStyle = 'blue';
-
         let x = 0;
         let y = 0;
         const width = w / duration;
         let height = 0;
 
+        // コメントデータ描画
+        ctx.fillStyle = color_comment;
         comments.forEach((c, i) => {
             height = (c / h) * 100;
             height = height > 100 ? 100 : height;
@@ -158,6 +181,17 @@ $(async function () {
             y = h - height;
 
             ctx.fillRect(x, y, width, height);
+        });
+
+        // ニコるデータ描画
+        ctx.fillStyle = color_nucoru;
+        nicoru.forEach((c, i) => {
+            height = (c / h) * 100;
+            height = height > 100 ? 100 : height;
+            x = i * width;
+            y = h - height;
+
+            ctx.fillRect(x, y, width/2, height);
         });
     }
 

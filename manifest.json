@@ -1,0 +1,19 @@
+{
+    "name": "nico2CommentVoltage",
+    "version": "0.0.1",
+    "manifest_version": 2,
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.nicovideo.jp/watch/sm*"
+            ],
+            "js": [
+                "./public/jquery-3.5.1.min.js",
+                "./src/index.js"
+            ]
+        }
+    ],
+    "permissions": [
+        "webRequest"
+    ]
+}
