@@ -111,6 +111,14 @@ const getNicoruData = (data_json) => {
     return arr;
 }
 
+const titleInfo = () => {
+    //URL取得
+    var host = location.hostname;
+    var path = location.pathname;
+    var now_location = host + path + "";
+    console.log("NicoNico Comment Voltage");
+}
+
 /** メイン */
 $(async function () {
 
@@ -118,8 +126,8 @@ $(async function () {
     let comments;
     let nicoru;
 
-    console.log("NicoNico Comment Voltage");
-    
+    titleInfo();
+
     data_json = await fetchComment();
     comments = getCommentData(data_json);
     nicoru = getNicoruData(data_json);
@@ -175,8 +183,9 @@ $(async function () {
         // コメントデータ描画
         ctx.fillStyle = color_comment;
         comments.forEach((c, i) => {
-            height = (c / h) * 100;
-            height = height > 100 ? 100 : height;
+            //height = (c / h) * 100;
+            //height = height > 100 ? 100 : height;
+            height = c;
             x = i * width;
             y = h - height;
 
@@ -191,7 +200,7 @@ $(async function () {
             x = i * width;
             y = h - height;
 
-            ctx.fillRect(x, y, width/2, height);
+            ctx.fillRect(x, y, width / 2, height);
         });
     }
 
