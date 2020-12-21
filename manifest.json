@@ -1,15 +1,23 @@
 {
-    "name": "nico2CommentVoltage",
+    "name": "niconico CommentVoltage",
     "version": "0.0.1",
     "manifest_version": 2,
+    "description": "ニコニコ動画のコメント量を視覚的にわかるよう描画する拡張機能",
+    "icons": {
+        "16": "public/images/icon16.png",
+        "32": "public/images/icon32.png",
+        "48": "public/images/icon48.png",
+        "128": "public/images/icon128.png",
+        "500": "public/images/icon500.png"
+    },
     "content_scripts": [
         {
             "matches": [
                 "https://www.nicovideo.jp/watch/sm*"
             ],
             "js": [
-                "./public/jquery-3.5.1.min.js",
-                "./src/index.js"
+                "public/jquery-3.5.1.min.js",
+                "src/index.js"
             ]
         }
     ],
