@@ -10,7 +10,7 @@ const makeJson = () => {
     let data = new Array();
     let num = 0;
 
-    api_json["commentComposite"]["threads"].forEach((thread) => {
+    api_json["comment"]["threads"].forEach((thread) => {
         if (thread["isActive"] == true) {
 
             data[num] = [
@@ -25,7 +25,6 @@ const makeJson = () => {
                         "with_global": 1,
                         "scores": 1,
                         "nicoru": 3,
-                        "userkey": `${api_json["context"]["userkey"]}`
                     }
                 },
                 { "ping": { "content": `${num}` } }
@@ -45,7 +44,6 @@ const makeJson = () => {
                             "content": `0-${x}:100,${y},nicoru:100`,
                             "scores": 1,
                             "nicoru": 3,
-                            "userkey": `${api_json["context"]["userkey"]}`
                         }
                     },
                     { "ping": { "content": `${num}` } }
