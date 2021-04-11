@@ -1,5 +1,3 @@
-[![](https://img.shields.io/github/license/yotsugi-vip/niconico-comment-voltage)]()
-
 [![](https://img.shields.io/chrome-web-store/v/dfcnmfcnncfijjkgfjibhjjebhhdided)]()
 [![](https://img.shields.io/chrome-web-store/users/dfcnmfcnncfijjkgfjibhjjebhhdided)]()
 
